@@ -19,10 +19,10 @@ exports.getWxUser = (req, res) => {
 
     let urlStr = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + config.AppID + '&secret=' + config.Secret + '&js_code=' + code + '&grant_type=authorization_code';
     request(urlStr, (error, response, body)=>{
-   //     if (!error && response.statusCode == 200) {
-	  if (true) {
-                //let data = JSON.parse(body)
-		let data = JSON.parse('{"openid":"mocked_openid","session_key":"mocked_sessionid","errcode":0}')
+          if (!error && response.statusCode == 200) {
+//	  if (true) {
+                let data = JSON.parse(body)
+		//let data = JSON.parse('{"openid":"mocked_openid","session_key":"mocked_sessionid","errcode":0}')
                 User.findOneAsync({ //查询数据库是否有该用户
                     openid:data.openid,
                 })

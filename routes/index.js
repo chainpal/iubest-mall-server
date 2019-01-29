@@ -9,6 +9,7 @@ const adminApi = require('../api/admin-api.js')
 const publicApi = require('../api/public-api.js')
 const userApi = require('../api/user-api.js')
 const orderApi = require('../api/order-api.js')
+const payApi = require('../api/pay-api.js')
 
 // ------- 管理 -------
 router.get('/v1/admin/delUser', intercept.admin,adminApi.delUser) //删除用户
@@ -27,7 +28,7 @@ router.get('/v1/admin/couponList',intercept.admin,adminApi.couponList) //所有�
 
 router.post('/v1/admin/uploadBanner',intercept.admin,adminApi.uploadBanner) //上传banner
 
-// ------- 首页 -------
+// ------- 首页 --------
 router.get('/v1/home/bannerList',homeApi.getBannerList) //获取banner
 
 router.get('/v1/home/getHotList',homeApi.getHotList) //获取推荐列表
@@ -75,6 +76,10 @@ router.get('/v1/order/cartList',intercept.user,orderApi.cartList) //购物车列
 router.post('/v1/order/delIetm',intercept.user,orderApi.cartDel) //购物车删除商品
 
 router.post('/v1/order/editCart',intercept.user,orderApi.editCart) //编辑购物车
+
+// -----支付------------
+router.post('/v1/payment/pay',intercept.user,payApi.pay) //支付
+
 
 router.get('*', (req, res) => {
     res.json({
