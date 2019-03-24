@@ -66,26 +66,31 @@ exports.pay = (req,res) => {
             if (!error && response.statusCode == 200) {
                 var returnValue = {};
                 parseString(body, function (err, result) {
+		    console.log(result.xml);
                     if (result.xml.return_code[0] == 'SUCCESS') {
 
                         let requestPaymentOpt = {
                             appid:config.AppID, //小程序ID
                             nonce_str:getNonce(32),       //随机字符串
                             package:"prepay_id="+ result.xml.prepay_id[0], // 统一下单接口返回的 prepay_id 参数值
-                            signType:md5,
+                            signType:'MD5',
                             timeStamp:Math.round(new Date().getTime()/1000).toString()
                         }
-                        let stringB =`appid=${requestPaymentOpt.appid}&nonce_str=${requestPaymentOpt.nonce_str}&package=${requestPaymentOpt.package}&signType=${requestPaymentOpt.signType}&timeStamp=${requestPaymentOpt.timeStamp}`
+                        let stringB =`appId=${requestPaymentOpt.appid}&nonceStr=${requestPaymentOpt.nonce_str}&package=${requestPaymentOpt.package}&signType=${requestPaymentOpt.signType}&timeStamp=${requestPaymentOpt.timeStamp}`
                         let stringSignTempB=stringB+"&key="+config.APIKey
+			console.log('TempB'+stringSignTempB)
+			
+                        let md5 = crypto.createHash('md5');
                         md5.update(stringSignTempB);
                         let signB = md5.digest('hex').toUpperCase();
+			console.log('signB'+signB)
 
                         returnValue.msg = '操作成功';
                         returnValue.status = '100';
                         returnValue.out_trade_no = unifiedOrderOpt.out_trade_no; // 商户订单号
                         // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign 这四个参数
                         returnValue.nonceStr = requestPaymentOpt.nonce_str; // 随机字符串
-                        returnValue.timestamp = requestPaymentOpt.timeStamp; // 时间戳
+                        returnValue.timeStamp = requestPaymentOpt.timeStamp; // 时间戳
                         returnValue.package = requestPaymentOpt.package; // 统一下单接口返回的 prepay_id 参数值
                         returnValue.paySign = signB; // 签名
 
